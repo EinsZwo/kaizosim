@@ -7,7 +7,7 @@ import pokebase as pb
 import random
 from kaizosim import constants
 import math
-
+import uuid
 
 
 def findMoveWithName(moveName):
@@ -196,6 +196,7 @@ class PokemonInstance:
         self.IVs = IndividualValues()
         self.baseStats = BaseStats(self,level)
         self.combatStats = CombatStats(self.baseStats.HP) 
+        self.ID = uuid.uuid4()
         
   
         
@@ -233,6 +234,9 @@ class PokemonInstance:
     
     def getHP(self):
         return self.combatStats.currentHP
+    
+    def isFainted(self):
+        return (self.getHP() > 0)
     
     
     def canMove(self):

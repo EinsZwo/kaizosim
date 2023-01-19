@@ -6,6 +6,7 @@ Created on Jan 2, 2023
 
 import random
 import pokemon
+from pokemon import logger
 
 # both pokemon select a move at random
 
@@ -25,13 +26,15 @@ import pokemon
 
 def determineFirstPokemon(pokemonOne,pokemonTwo):
     if pokemonOne.getSpeed() > pokemonTwo.getSpeed():
-        return pokemonOne
+        return pokemonOne, pokemonTwo
     
     if pokemonOne.getSpeed() < pokemonTwo.getSpeed():
-        return pokemonTwo
+        return pokemonTwo, pokemonOne
     
     else:
-        return random.choice([pokemonOne,pokemonTwo])
+        first = random.choice([pokemonOne,pokemonTwo])
+        second = [pokemonOne,pokemonTwo].remove(first)[0]
+        return first,second
 
 
 def takeTurn(pokemonToMove,oppPokemon):
@@ -43,12 +46,15 @@ def takeTurn(pokemonToMove,oppPokemon):
 def preTurnStatus(pokemon):
     if(pokemon.Status.sleep):
         # chance to wake up
-        1
-    if(pokemon.Status.confused):
-        # chance to snap outs
-        1
+        pokemon.Status.sleep-=1
         
-    # infatuation...? 
+    if(pokemon.Status.confused):
+        pokemon.Status.confused-=1
+        # chance to snap out
+        
+        
+    # ... more to follow
+    
     
 def endOfTurnStatuses(pokemon):
     pokemon.Status.flinch = False
@@ -61,5 +67,10 @@ def endOfTurnStatuses(pokemon):
         # apply burn damage
         1
     if (pokemon.Status.constrict):
+        
         1 # TODO
     
+def oneBattleIteration(pokemon1,pokemon2):
+    
+    while(not pokemon1.isFainted() and not pokemon2.isFainted()):
+        
