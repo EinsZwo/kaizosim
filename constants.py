@@ -17,3 +17,4 @@ for gen in range(1,GENERATION+1):
     ALL_MOVES.extend(gen_resource.moves)
 
 MAX_IV = 31
+

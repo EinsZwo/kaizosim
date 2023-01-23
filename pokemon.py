@@ -245,13 +245,20 @@ class PokemonInstance:
         # todo: confusion, etc.
         return True
     
+    def getRandomMove(self):
+        #todo: check power points
+        return random.choice(self.moves)
     
     def useMove(self, move, targetPokemon):
-        # todo: subtract PP
+        # todo: subtract power points
         move.applyMove(self,targetPokemon)
         
     def takeDamage(self,damage):
         self.currentHP = max(self.currentHP - damage,0)
+        
+    def takeDamagePercentage(self,percentage):
+        damageToTake = round((self.baseStats.HP * percentage))
+        self.takeDamage(damageToTake)
 
 
         

@@ -1,47 +1,42 @@
 '''
-Created on Jan 2, 2023
-
-@author: matth
+Main module for running simulations of battles
 '''
 
 import random
 import pokemon
-from pokemon import logger
+from kaizosim import logger
+from kaizosim.statusconditions import StatusConditions
 
-# both pokemon select a move at random
 
-# determine who goes first
-    # priority moves (e.g. Quick Attack)
-    # speed
-    # apply modifiers like paralysis (minus speed)
+
+
+def determineTurnOrder(pokemon1,pokemon2):
+    # determine who goes first
+    if pokemon1.getSpeed() > pokemon2.getSpeed():
+        return pokemon1, pokemon2
     
-    
-# do moves
-
-
-# check status conditions
-
-# check for fainting whenever HP is modified
-
-
-def determineFirstPokemon(pokemonOne,pokemonTwo):
-    if pokemonOne.getSpeed() > pokemonTwo.getSpeed():
-        return pokemonOne, pokemonTwo
-    
-    if pokemonOne.getSpeed() < pokemonTwo.getSpeed():
-        return pokemonTwo, pokemonOne
+    if pokemon1.getSpeed() < pokemon2.getSpeed():
+        return pokemon2, pokemon1
     
     else:
-        first = random.choice([pokemonOne,pokemonTwo])
-        second = [pokemonOne,pokemonTwo].remove(first)[0]
+        first = random.choice([pokemon1,pokemon2])
+        second = [pokemon1,pokemon2].remove(first)[0]
         return first,second
 
 
 def takeTurn(pokemonToMove,oppPokemon):
-    if(not pokemonToMove.canMove()):
-        return
     
-    pokemonToMove.makeMove(oppPokemon)
+    # determine a valid move randomly
+    
+    move = pokemonToMove.getRandomMove()
+    
+    # log move
+    logger.logMove(pokemonToMove,move)
+    pokemonToMove.useMove(move,oppPokemon)
+    logger.logPokemonStatus(oppPokemon)
+
+
+    
 
 def preTurnStatus(pokemon):
     if(pokemon.Status.sleep):
@@ -61,16 +56,25 @@ def endOfTurnStatuses(pokemon):
     
     if (pokemon.Status.poisoned):
         # apply poison damage
-        1
+        pokemon.takeDamagePercentage(StatusConditions.POISON_DAMAGE_FRACTION)
     
     if (pokemon.Status.burned):
         # apply burn damage
-        1
-    if (pokemon.Status.constrict):
+        pokemon.takeDamagePercentage(StatusConditions.BURN_DAMAGE_FRACTION)
         
-        1 # TODO
+
     
 def oneBattleIteration(pokemon1,pokemon2):
     
+    logger.logPokemonInitial(pokemon1)
+    logger.logPokemonInitial(pokemon2)
+    
     while(not pokemon1.isFainted() and not pokemon2.isFainted()):
+        firstToMove, secondToMove = determineTurnOrder(pokemon1,pokemon2)
+        
+        takeTurn(firstToMove,secondToMove)
+        
+        
+        if(not secondToMove.isFainted() and not firstToMove.isFainted()):
+            takeTurn(secondToMove,firstToMove)
         
